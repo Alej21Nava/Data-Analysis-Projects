@@ -7,28 +7,28 @@ From PortfolioProject..CovidDeaths
 order by 1,2  
 
 
--- likelihood of dying if you contract covid in your country
+-- Likelihood Of Dying If You Contract Covid In Your Country
 
 select Location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 From PortfolioProject..CovidDeaths
 where location like '%states%'
 order by 1,2 
 
--- percentage of United States Population who had covid.
+-- Percentage Of United States Population Who Had Covid.
 
 select Location, date, population, total_cases,  (total_cases/population)*100 as InfectedPercentage
 From PortfolioProject..CovidDeaths
 where location like '%states%'
 order by 1,2 
 
--- percentage of populationn infected by country
+-- Percentage of Populationn Infected By Country
 
 select Location, population, MAX(total_cases) as HighestInfectionCount,  max((total_cases/population))*100 as PopulationInfectedPercentage
 From PortfolioProject..CovidDeaths
 Group by location, population
 order by PopulationInfectedPercentage desc
 
--- continents with highest death count per population
+-- Continents With Highest Death Count Per Population
 
 select continent, MAX(cast(total_deaths as int)) as TotalDeathCount
 From PortfolioProject..CovidDeaths
@@ -45,14 +45,14 @@ where continent is not null
 Group by date
 order by 1,2 
 
--- total cases vs total deaths 
+-- Total Cases VS Total Deaths 
 
 select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(new_cases)*100 as DeathPercentage
 From PortfolioProject..CovidDeaths
 where continent is not null
 order by 1,2 
 
--- Total Population vs Vacinations
+-- Total Population VS Vaccinations
 
 select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, SUM(convert(bigint, new_vaccinations)) OVER (Partition by dea.location order by dea.location, dea.date) as RollingPeopleVaccinated
 from PortfolioProject..CovidDeaths dea
@@ -75,7 +75,7 @@ where dea.continent is not null
 select *, (RollingPeopleVaccinated/population)*100
 from PopvsVac
 
--- temp table
+-- TEMP Table
 
 DROP Table if exists #PercentPopulationVaccinated
 Create Table #PercentPopulationVaccinated
@@ -99,7 +99,7 @@ join PortfolioProject..CovidVacinations vac
 select *, (RollingPeopleVaccinated/population)*100
 from #PercentPopulationVaccinated
 
--- Creating View To Store data for later Visualizations
+-- Creating View To Store Data For Later Visualizations
 
 create View PercentPopulationVaccinated as 
 select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
